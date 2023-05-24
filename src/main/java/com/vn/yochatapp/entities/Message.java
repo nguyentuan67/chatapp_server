@@ -26,4 +26,8 @@ public class Message {
 
     @Column(name = "time")
     private Date time;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "conversation")
+    private Conversation conversation;
 }

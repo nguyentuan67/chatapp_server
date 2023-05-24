@@ -41,4 +41,12 @@ public class AuthUser {
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
     private List<Role> authRoles = new ArrayList<Role>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_conversation",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "conversation_id")
+    )
+    private List<Conversation> conversations = new ArrayList<Conversation>();
 }
