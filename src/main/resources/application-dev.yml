@@ -7,3 +7,18 @@ spring:
     username: root
     url: jdbc:mysql://127.0.0.1:3306/yo_chatapp
     password: 123456qQ@
+
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          google:
+#            client-id: 956227394363-pm783anre4tkrc73g2snpi3dkliut78m.apps.googleusercontent.com
+#            client-secret: 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
+
+security:
+  jwt:
+    token:
+      secret-key: 111111
+      expire-length: 86400000
+      jwtCookieName: kichat
