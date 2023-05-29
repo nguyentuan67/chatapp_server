@@ -2,7 +2,6 @@ package com.vn.yochatapp.config.security.service;
 
 import com.vn.yochatapp.entities.AuthUser;
 import lombok.Data;
-import net.minidev.json.annotate.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,7 +16,6 @@ public class UserDetailsImpl implements UserDetails {
     private Long id;
     private String username;
 
-    @JsonIgnore
     private String password;
 
     private Collection<? extends GrantedAuthority> authorities;

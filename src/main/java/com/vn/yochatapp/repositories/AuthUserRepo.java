@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository(value = "authUserRepo")
 public interface AuthUserRepo extends JpaRepository<AuthUser, Long> {
-    AuthUser findByUserName(String username);
+    AuthUser findByUsername(String username);
 
-    AuthUser findByEmail(String email);
+    Boolean existsByUsername(String username);
 }

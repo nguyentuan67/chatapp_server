@@ -17,12 +17,27 @@ public class AuthUserServiceImpl implements AuthUserService {
     }
 
     @Override
-    public AuthUser findByEmail(String email) {
-        return authUserRepo.findByEmail(email);
+    public AuthUser findByUsername(String username) {
+        return authUserRepo.findByUsername(username);
     }
 
     @Override
-    public AuthUser findByUsername(String username) {
-        return authUserRepo.findByUserName(username);
+    public Boolean existsByUsername(String username) {
+        return authUserRepo.existsByUsername(username);
+    }
+
+    @Override
+    public void create(AuthUser authUser) {
+        authUserRepo.save(authUser);
+    }
+
+    @Override
+    public void update(AuthUser authUser) {
+        authUserRepo.save(authUser);
+    }
+
+    @Override
+    public void delete(AuthUser authUser) {
+        authUserRepo.delete(authUser);
     }
 }

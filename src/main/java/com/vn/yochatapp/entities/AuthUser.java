@@ -49,4 +49,13 @@ public class AuthUser {
             inverseJoinColumns = @JoinColumn(name = "conversation_id")
     )
     private List<Conversation> conversations = new ArrayList<Conversation>();
+
+    public AuthUser(String username, String firstName, String lastName, Boolean gender, String password) {
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.fullName = firstName + " " + lastName;
+        this.gender = gender;
+        this.password = password;
+    }
 }
