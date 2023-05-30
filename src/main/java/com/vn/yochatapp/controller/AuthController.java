@@ -60,26 +60,27 @@ public class AuthController {
         try {
             Authentication authentication = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(username, password));
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
-            ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
-
-            List<String> roles = userDetails.getAuthorities().stream()
-                    .map(item -> item.getAuthority())
-                    .collect(Collectors.toList());
-
             if(authentication.isAuthenticated()) {
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+                String jwtCookie = jwtUtils.generateJwtCookie(userDetails);
+
+                List<String> roles = userDetails.getAuthorities().stream()
+                        .map(item -> item.getAuthority())
+                        .collect(Collectors.toList());
+
+
                 AuthUserResponse userInfo = new AuthUserResponse(userDetails.getId(),
                         userDetails.getUsername(),
-                        roles);
+                        roles,
+                        jwtCookie);
                 commonResponse.setStatusCode(Constants.RestApiReturnCode.SUCCESS);
                 commonResponse.setMessage(Constants.RestApiReturnCode.SUCCESS_TXT);
                 commonResponse.setOutput(userInfo);
 
-                return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+                return ResponseEntity.ok()
                         .body(commonResponse);
             } else {
                 commonResponse.setStatusCode(Constants.RestApiReturnCode.UNAUTHORIZED);

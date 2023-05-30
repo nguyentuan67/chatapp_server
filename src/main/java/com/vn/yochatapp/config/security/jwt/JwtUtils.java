@@ -36,10 +36,15 @@ public class JwtUtils {
     }
 
     //generate a Cookie containing JWT from username, date, expiration, secret
-    public ResponseCookie generateJwtCookie(UserDetailsImpl userPrincipal) {
-        String jwt = generateTokenFromUsername(userPrincipal.getUsername());
-        ResponseCookie cookie = ResponseCookie.from(jwtCookie, jwt).path("/api").maxAge(24 * 60 * 60).httpOnly(true).build();
-        return cookie;
+    public String generateJwtCookie(UserDetailsImpl userPrincipal) {
+        return Jwts
+                .builder()
+                .setSubject(userPrincipal.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(jwtExpirationMs))
+                .signWith(SignatureAlgorithm.HS256, jwtSecret)
+                .compact();
+
     }
 
     //return Cookie with null value (used for clean Cookie)

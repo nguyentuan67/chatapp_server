@@ -12,4 +12,5 @@ public class AuthUserResponse {
     private Long id;
     private String username;
     private List<String> roles;
+    private String jwtToken;
 }
