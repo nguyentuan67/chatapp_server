@@ -6,6 +6,8 @@ import com.vn.yochatapp.service.AuthUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AuthUserServiceImpl implements AuthUserService {
     @Autowired
@@ -24,6 +26,11 @@ public class AuthUserServiceImpl implements AuthUserService {
     @Override
     public Boolean existsByUsername(String username) {
         return authUserRepo.existsByUsername(username);
+    }
+
+    @Override
+    public List<AuthUser> searchUserByNameAnhNotId(String name, Long id) {
+        return authUserRepo.searchUserByNameAndNotId(name, id);
     }
 
     @Override

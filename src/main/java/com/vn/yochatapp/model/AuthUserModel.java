@@ -16,14 +16,15 @@ public class AuthUserModel {
     private String firstName;
     private String lastName;
     private Boolean gender;
-    private List<Role> roles;
+    private byte[] avatar;
+    private String avatarUrl;
 
     public AuthUserModel(AuthUser authUser) {
         this.username = authUser.getUsername();
         this.firstName = authUser.getFirstName();
         this.lastName = authUser.getLastName();
-        for(Role role : authUser.getAuthRoles()) {
-            this.roles.add(role);
-        }
+        this.gender = authUser.getGender();
+        this.avatar = authUser.getAvatar();
+        this.avatarUrl = authUser.getAvatarUrl();
     }
 }

@@ -32,6 +32,12 @@ public class AuthUser {
     @Column(name = "gender")
     private Boolean gender;
 
+    @Column(name = "avatar")
+    private byte[] avatar;
+
+    @Column(name = "avatar_url")
+    private String avatarUrl;
+
     @Column(name = "password")
     private String password;
 
