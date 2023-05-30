@@ -65,7 +65,7 @@ public class AuthController {
 
                 UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-                String jwtCookie = jwtUtils.generateJwtCookie(userDetails);
+                String jwtCookie = jwtUtils.generateJwtToken(userDetails);
 
                 List<String> roles = userDetails.getAuthorities().stream()
                         .map(item -> item.getAuthority())
