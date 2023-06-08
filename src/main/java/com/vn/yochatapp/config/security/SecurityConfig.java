@@ -17,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -25,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 @Configuration
+@CrossOrigin
 @EnableGlobalMethodSecurity (
         prePostEnabled = true)
 public class SecurityConfig {
@@ -74,6 +76,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // Enable CORS and disable CSRF
         http.cors().configurationSource(this.corsConfigurationSource()).and().csrf().disable()
+                .requiresChannel(channel ->
+                        channel.anyRequest().requiresSecure())
                 // Set unauthorized requests exception handler
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
                 .and()
@@ -83,7 +87,8 @@ public class SecurityConfig {
                 // Set permissions on endpoints
                 .authorizeRequests().antMatchers("/api/auth/**").permitAll()
                 .antMatchers("/api/test/**").permitAll()
-                .anyRequest().authenticated();
+                .antMatchers("/socket.io").permitAll()
+                .anyRequest().permitAll();
 
         http.authenticationProvider(authenticationProvider());
         //Add JWT token filter.
