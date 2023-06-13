@@ -15,7 +15,7 @@ public class AuthUserServiceImpl implements AuthUserService {
 
     @Override
     public AuthUser findOne(Long id) {
-        return authUserRepo.getOne(id);
+        return authUserRepo.getAuthUserById(id);
     }
 
     @Override

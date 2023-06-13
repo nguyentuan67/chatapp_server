@@ -29,4 +29,9 @@ public interface Constants {
         public int MALE = 1;
         public int FEMALE = 0;
     }
+
+    public interface TypeConversation {
+        public int PRIVATE = 1;
+        public int GROUP = 2;
+    }
 }

@@ -21,6 +21,9 @@ public class Conversation {
     @Column(name = "type")
     private int type;
 
+    @Column(name = "channel_id")
+    private Long channelId;
+
     @Column(name = "name")
     private String name;
 
@@ -33,7 +36,6 @@ public class Conversation {
     @OneToMany(mappedBy = "conversation",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Message> messages;
 
-    @ManyToMany(mappedBy = "conversations")
-    private List<AuthUser> authUsers = new ArrayList<AuthUser>();
-
+    @OneToMany(mappedBy = "conversation",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Participants> participants;
 }

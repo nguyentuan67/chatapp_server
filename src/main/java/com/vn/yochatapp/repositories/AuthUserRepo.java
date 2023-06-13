@@ -10,6 +10,8 @@ import java.util.List;
 
 @Repository(value = "authUserRepo")
 public interface AuthUserRepo extends JpaRepository<AuthUser, Long> {
+    AuthUser getAuthUserById(Long id);
+
     AuthUser findByUsername(String username);
 
     Boolean existsByUsername(String username);
