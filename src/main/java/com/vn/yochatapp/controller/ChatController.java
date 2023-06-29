@@ -1,79 +1,72 @@
 package com.vn.yochatapp.controller;
 
-import com.vn.yochatapp.Constants;
-import com.vn.yochatapp.config.security.service.UserDetailsImpl;
 import com.vn.yochatapp.entities.AuthUser;
-import com.vn.yochatapp.entities.Conversation;
-import com.vn.yochatapp.model.ChatMessageModel;
-import com.vn.yochatapp.model.CommonResponse;
-import com.vn.yochatapp.model.ConversationModel;
+import com.vn.yochatapp.entities.Message;
+import com.vn.yochatapp.model.MessageModel;
+import com.vn.yochatapp.model.MessageRequest;
 import com.vn.yochatapp.service.AuthUserService;
-import com.vn.yochatapp.service.ChatService;
+import com.vn.yochatapp.service.ConversationService;
+import com.vn.yochatapp.service.MessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Date;
 
 @RestController
-@RequestMapping("/api/chat")
 public class ChatController {
+    private final SimpMessagingTemplate messagingTemplate;
     private static final Logger logger = LoggerFactory.getLogger(ChatController.class);
 
-    private final SimpMessagingTemplate messagingTemplate;
-
     @Autowired
-    ChatService chatService;
+    ConversationService conversationService;
 
     @Autowired
     AuthUserService authUserService;
 
+    @Autowired
+    MessageService messageService;
     public ChatController(SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
     }
 
-    @GetMapping("getConversation")
-    @PreAuthorize("hasAuthority('USER')")
-    public CommonResponse<ConversationModel> getConverstation(@RequestParam("userId") Long userId) {
-        CommonResponse<ConversationModel> response = new CommonResponse<>();
+//    @MessageMapping("/chat")
+//    @SendTo("/topic/chat")
+//    public MessageRequest sendMessage(@Payload MessageRequest chatMessage) {
+//        return chatMessage;
+//    }
+
+    @MessageMapping("/chat/user/{userId}")
+    public void sendMessage(@DestinationVariable Long userId, MessageRequest messageRequest) throws Exception {
         try {
-            AuthUser user = authUserService.findOne(userId);
-            if (user != null) {
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-                Conversation conv = chatService.findConversationByUserId(userDetails.getId(), userId);
-                response.setStatusCode(Constants.RestApiReturnCode.SUCCESS);
-                response.setMessage(Constants.RestApiReturnCode.SUCCESS_TXT);
-                response.setMessage("Thành công");
-                if (conv != null) {
-                    //nếu có conv thì tải các tin nhắn trong cuộc hội thoại
-                    ConversationModel output = new ConversationModel(conv);
-                    response.setOutput(output);
-                } else {
-                    response.setOutput(null);
-                }
-            } else {
-                response.setStatusCode(Constants.RestApiReturnCode.BAD_REQUEST);
-                response.setMessage(Constants.RestApiReturnCode.BAD_REQUEST_TXT);
-                response.setOutput(null);
-                response.setMessage("Không tồn tại");
-            }
-            return response;
+            // Xử lý tin nhắn riêng tư
+            AuthUser authUser = authUserService.findOne(messageRequest.getUserId());
+
+            Message message = new Message();
+            message.setConversation(conversationService.findById(messageRequest.getConversationId()));
+            message.setContent(messageRequest.getContent());
+            message.setAuthUser(authUserService.findOne(authUser.getId()));
+            message.setTime(new Date());
+            messageService.create(message);
+
+            // Gửi lại tin nhắn tới người dùng đích sử dụng SimpMessagingTemplate
+            messagingTemplate.convertAndSend( "/topic/user/"+userId, new MessageModel(message));
         } catch (Exception e) {
-            logger.error("", e);
-            response.setStatusCode(Constants.RestApiReturnCode.SYS_ERROR);
-            response.setMessage(Constants.RestApiReturnCode.SYS_ERROR_TXT);
-            response.setOutput(null);
-            response.setMessage("Lỗi máy chủ");
-            return response;
+            logger.error("send message", e);
         }
     }
 
-    @PostMapping("/send")
-    public void sendMessage(@RequestBody ChatMessageModel chatMessage) {
-        messagingTemplate.convertAndSend("/topic/ws", chatMessage);
-    }
+//    @MessageMapping("/chat/user/{userId}")
+//    public void sendPrivateMessage(@DestinationVariable Long userId, String message) {
+//        try {
+//            String ReceiverName = authUserService.findOne(userId).getUsername();
+//            messagingTemplate.convertAndSendToUser(ReceiverName, "/queue/private-chat", message);
+//        } catch (Exception e) {
+//            logger.error("send message", e);
+//        }
+//    }
 }

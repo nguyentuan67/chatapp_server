@@ -1,15 +1,13 @@
 package com.vn.yochatapp.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
-
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name="message")
 public class Message {
@@ -28,6 +26,6 @@ public class Message {
     private Date time;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "conversation")
+    @JoinColumn(name = "conversation_id")
     private Conversation conversation;
 }

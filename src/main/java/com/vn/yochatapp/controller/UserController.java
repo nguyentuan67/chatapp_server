@@ -50,4 +50,32 @@ public class UserController {
             return response;
         }
     }
+
+    @GetMapping("")
+    @PreAuthorize("hasAuthority('USER')")
+    public CommonResponse<AuthUserModel> getUserById(@RequestParam("id") Long id) {
+        CommonResponse<AuthUserModel> response = new CommonResponse<>();
+        try {
+            AuthUser authUser = authUserService.findOne(id);
+            if (authUser != null) {
+                response.setStatusCode(Constants.RestApiReturnCode.SUCCESS);
+                response.setMessage(Constants.RestApiReturnCode.SUCCESS_TXT);
+                response.setError("Thành công");
+                AuthUserModel user = new AuthUserModel(authUser);
+                response.setOutput(user);
+            } else {
+                response.setStatusCode(Constants.RestApiReturnCode.BAD_REQUEST);
+                response.setMessage(Constants.RestApiReturnCode.BAD_REQUEST_TXT);
+                response.setError("Không tìm thấy kết quả");
+                response.setOutput(null);
+            }
+            return response;
+        } catch (Exception e) {
+            response.setStatusCode(Constants.RestApiReturnCode.SYS_ERROR);
+            response.setMessage(Constants.RestApiReturnCode.SYS_ERROR_TXT);
+            response.setOutput(null);
+            response.setError("Lỗi máy chủ");
+            return response;
+        }
+    }
 }

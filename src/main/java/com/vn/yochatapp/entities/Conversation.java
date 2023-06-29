@@ -33,7 +33,7 @@ public class Conversation {
     @Column(name = "avatar_url")
     private String avatarUrl;
 
-    @OneToMany(mappedBy = "conversation",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "conversation",fetch = FetchType.LAZY)
     private List<Message> messages;
 
     @OneToMany(mappedBy = "conversation",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
