@@ -1,10 +1,13 @@
 package com.vn.yochatapp.model;
 
+import com.vn.yochatapp.entities.AuthUser;
 import com.vn.yochatapp.entities.Conversation;
 import com.vn.yochatapp.entities.Message;
+import com.vn.yochatapp.entities.Participants;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -15,8 +18,7 @@ public class ConversationModel {
     private Long channelId;
     private String name;
     private String avtarUrl;
-    private List<Message> messages;
-    private List<AuthUserModel> users;
+    private List<AuthUserModel> users = new ArrayList<>();
 
     public ConversationModel(Conversation conv) {
         this.id = conv.getId();
@@ -24,6 +26,5 @@ public class ConversationModel {
         this.channelId = conv.getChannelId();
         this.name = conv.getName();
         this.avtarUrl = conv.getAvatarUrl();
-        this.messages = null;
     }
 }

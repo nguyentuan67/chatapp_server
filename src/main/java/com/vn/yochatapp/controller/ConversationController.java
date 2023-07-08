@@ -4,9 +4,11 @@ import com.vn.yochatapp.Constants;
 import com.vn.yochatapp.config.security.service.UserDetailsImpl;
 import com.vn.yochatapp.entities.Conversation;
 import com.vn.yochatapp.entities.Message;
+import com.vn.yochatapp.entities.Participants;
 import com.vn.yochatapp.model.*;
 import com.vn.yochatapp.service.AuthUserService;
 import com.vn.yochatapp.service.ConversationService;
+import com.vn.yochatapp.service.ParticipantsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,9 @@ public class ConversationController {
 
     @Autowired
     AuthUserService authUserService;
+
+    @Autowired
+    ParticipantsService participantsService;
 
     public ConversationController(SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
@@ -96,18 +101,32 @@ public class ConversationController {
         }
     }
 
-    @PostMapping("createPrivateChat")
+    @PostMapping("conversation")
     @PreAuthorize("hasAuthority('USER')")
-    public CommonResponse<Conversation> createPrivateConv() {
-        CommonResponse<Conversation> response = new CommonResponse<>();
+    public CommonResponse<ConversationModel> createPrivateConv(@RequestBody CreateConvRequest convRequest) {
+        CommonResponse<ConversationModel> response = new CommonResponse<>();
         try {
             Conversation conv = new Conversation();
-            conv.setType(Constants.TypeConversation.PRIVATE);
+            if (convRequest.getListUserId().size() == 2) {
+                conv.setType(Constants.TypeConversation.PRIVATE);
+            } else {
+                conv.setType(Constants.TypeConversation.GROUP);
+            }
             conversationService.create(conv);
+            List<Participants> participants = new ArrayList<>();
+            for (Long userid : convRequest.getListUserId()) {
+                Participants participant = new Participants();
+                participant.setConversation(conv);
+                participant.setAuthUser(authUserService.findOne(userid));
+                participantsService.create(participant);
+                participants.add(participant);
+            }
+            conv.setParticipants(participants);
+            ConversationModel conversationModel = new ConversationModel(conv);
             response.setStatusCode(Constants.RestApiReturnCode.SUCCESS);
             response.setMessage(Constants.RestApiReturnCode.SUCCESS_TXT);
             response.setMessage("Thành công");
-            response.setOutput(conv);
+            response.setOutput( conversationModel);
             return response;
         } catch (Exception e) {
             logger.error("", e);

@@ -20,6 +20,6 @@ public class MessageModel {
         this.content = message.getContent();
         this.user = new AuthUserModel(message.getAuthUser());
         this.time = message.getTime();
-        this.conversation = new ConversationModel(message.getConversation());
+//        this.conversation = new ConversationModel(message.getConversation());
     }
 }
