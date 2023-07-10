@@ -138,10 +138,31 @@ public class ConversationController {
         }
     }
 
-    @PostMapping("/send")
-    public void sendMessage(@RequestBody ChatMessageModel chatMessage) {
-        messagingTemplate.convertAndSend("/topic/ws", chatMessage);
-    }
+    @GetMapping("conversations")
+    @PreAuthorize("hasAuthority('USER')")
+    public CommonResponse<List<ConversationModel>> searchUser() {
+      CommonResponse<List<ConversationModel>> response = new CommonResponse<>();
+      try {
+          Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+          UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+          List<Conversation> conversations = conversationService.getConversations(userDetails.getId());
 
+          List<ConversationModel> convs = new ArrayList<>();
+          for(Conversation conv : conversations) {
+              convs.add(new ConversationModel(conv));
+          }
+          response.setOutput(convs);
+          response.setStatusCode(Constants.RestApiReturnCode.SUCCESS);
+          response.setMessage(Constants.RestApiReturnCode.SUCCESS_TXT);
+          return response;
+      } catch (Exception e) {
+          logger.error("get conversations", e);
+          response.setStatusCode(Constants.RestApiReturnCode.SYS_ERROR);
+          response.setMessage(Constants.RestApiReturnCode.SYS_ERROR_TXT);
+          response.setOutput(null);
+          response.setError("Lỗi máy chủ");
+          return response;
+      }
+    }
 
 }

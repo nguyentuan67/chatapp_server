@@ -36,6 +36,11 @@ public class ConversationServiceImpl implements ConversationService {
     }
 
     @Override
+    public List<Conversation> getConversations(Long userId) {
+        return conversationRepo.getConversations(userId);
+    }
+
+    @Override
     public void create(Conversation conv) {
         conversationRepo.save(conv);
     }

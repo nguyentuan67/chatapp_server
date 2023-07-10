@@ -13,13 +13,11 @@ public class MessageModel {
     private String content;
     private AuthUserModel user;
     private Date time;
-    private ConversationModel conversation;
 
     public MessageModel(Message message) {
         this.id = message.getId();;
         this.content = message.getContent();
         this.user = new AuthUserModel(message.getAuthUser());
         this.time = message.getTime();
-//        this.conversation = new ConversationModel(message.getConversation());
     }
 }

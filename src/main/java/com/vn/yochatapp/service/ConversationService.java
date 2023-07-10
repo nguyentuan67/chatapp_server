@@ -10,5 +10,6 @@ public interface ConversationService {
     Conversation findById(Long id);
     Conversation findConversationByUserId(Long authUserId, Long userId);
     List<Message> findMessages(Long convId, int offset, int size);
+    List<Conversation> getConversations(Long userId);
     void create(Conversation conv);
 }
