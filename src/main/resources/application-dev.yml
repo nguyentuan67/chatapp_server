@@ -12,8 +12,9 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    url: jdbc:mysql://127.0.0.1:3306/yo_chatapp
+    url: jdbc:mysql://127.0.0.1:3306/yo_chatapp?useUnicode=yes&characterEncoding=UTF-8
     password: 123456qQ@
+
 
 #  security:
 #    oauth2:

@@ -34,6 +34,8 @@ public interface ConversationRepo extends JpaRepository<Conversation, Long> {
     @Query("SELECT c " +
             "FROM Conversation c " +
             "JOIN c.messages m " +
+            "JOIN c.participants p " +
+            "WHERE p.authUser.id = :userId " +
             "GROUP BY c " +
             "ORDER BY MAX(m.time) DESC")
     List<Conversation> getConversations(@Param("userId") Long userId);
