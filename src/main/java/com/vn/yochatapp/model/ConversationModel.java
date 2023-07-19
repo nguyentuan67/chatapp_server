@@ -30,10 +30,12 @@ public class ConversationModel {
         for (Participants participant : conv.getParticipants()) {
             users.add(new AuthUserModel(participant.getAuthUser()));
         }
-        this.lastMessage = new MessageModel(conv.getMessages()
-                .stream()
-                .max(Comparator.comparing(Message::getTime))
-                .orElse(null)
-        );
+        if(conv.getMessages() != null) {
+            this.lastMessage = new MessageModel(conv.getMessages()
+                    .stream()
+                    .max(Comparator.comparing(Message::getTime))
+                    .orElse(null)
+            );
+        }
     }
 }
