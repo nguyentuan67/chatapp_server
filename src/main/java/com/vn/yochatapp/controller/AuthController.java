@@ -14,6 +14,7 @@ import com.vn.yochatapp.service.AuthUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -22,11 +23,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,6 +50,12 @@ public class AuthController {
     @Autowired
     JwtUtils jwtUtils;
 
+    @Value("${store-folder}")
+    private String storeFolder;
+    @Value("${store-url}")
+    private String storeUrl;
+    @Value("${default-avatar}")
+    private String defaultAvatar;
     @PostMapping("/login")
     public ResponseEntity<CommonResponse> login(@RequestBody LoginRequest loginRequest) {
         String username = loginRequest.getUsername();
@@ -96,7 +101,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<CommonResponse> registerUser(@RequestBody SignupRequest reqBody) {
+    public ResponseEntity<CommonResponse> registerUser(@ModelAttribute SignupRequest reqBody) {
         CommonResponse commonResponse = new CommonResponse();
         try {
 
@@ -119,6 +124,20 @@ public class AuthController {
                 roles.add(role);
                 authUser.setAuthRoles(roles);
                 authUserService.create(authUser);
+                //save avatar
+                if (reqBody.getAvatar() != null) {
+                    String fileName = "avatar"+authUser.getId().toString()+reqBody.getAvatar().getOriginalFilename();
+                    String uploadDir = storeFolder + fileName;
+                    String pathUrl= storeUrl + fileName;
+
+                    File dest = new File(uploadDir);
+                    reqBody.getAvatar().transferTo(dest);
+                    authUser.setAvatarUrl(pathUrl);
+                } else {
+                    authUser.setAvatarUrl(defaultAvatar);
+                }
+                authUserService.update(authUser);
+
                 commonResponse.setStatusCode(Constants.RestApiReturnCode.SUCCESS);
                 commonResponse.setMessage(Constants.RestApiReturnCode.SUCCESS_TXT);
                 commonResponse.setError("Đăng ký thành công");

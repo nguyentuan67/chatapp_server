@@ -30,3 +30,7 @@ security:
       secret-key: 111111
       expire-length: 86400000
       jwtCookieName: kichat
+
+store-folder: H:/workspace/yo_chatapp/chatapp_store/
+store-url: https://localhost:8443/resources/
+default-avatar: H:/workspace/yo_chatapp/chatapp_store/default-avatar.jpg

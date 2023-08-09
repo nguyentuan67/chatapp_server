@@ -8,11 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SignupRequest {
-    private String username;
-    private String password;
-    private String firstName;
-    private String lastName;
-    private Boolean gender;
+public class AvatarRequestModel {
+    private long userId;
     private MultipartFile avatar;
 }
