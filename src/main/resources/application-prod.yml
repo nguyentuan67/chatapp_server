@@ -6,4 +6,7 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/yo_chatapp
     password: 123456qQ@
 
+document-folder: D:/yo_doc/
+document-url: http://localhost:8081/resources/
+
 
