@@ -1,12 +1,29 @@
+server:
+  port: 8081
 
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    url: jdbc:mysql://127.0.0.1:3306/yo_chatapp
+    url: jdbc:mysql://127.0.0.1:3306/yo_chatapp?useUnicode=yes&characterEncoding=UTF-8
     password: 123456qQ@
 
-document-folder: D:/yo_doc/
-document-url: http://localhost:8081/resources/
 
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          google:
+#            client-id: 956227394363-pm783anre4tkrc73g2snpi3dkliut78m.apps.googleusercontent.com
+#            client-secret: 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
 
+security:
+  jwt:
+    token:
+      secret-key: 111111
+      expire-length: 86400000
+      jwtCookieName: kichat
+
+store-folder: H:/workspace/yo_chatapp/chatapp_store/
+store-url: http://localhost:8081/resources/
+default-avatar: H:/workspace/yo_chatapp/chatapp_store/default-avatar.jpg

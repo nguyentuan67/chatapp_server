@@ -1,12 +1,12 @@
 server:
-  ssl:
-    key-store: classpath:local-ssl.p12
-    key-store-password: password
-    key-store-type: PKCS12
-    key-alias: local_ssl
-    key-password: password
-    enabled: true
-  port: 8443
+#  ssl:
+#    key-store: classpath:local-ssl.p12
+#    key-store-password: password
+#    key-store-type: PKCS12
+#    key-alias: local_ssl
+#    key-password: password
+#    enabled: true
+  port: 8081
 
 spring:
   datasource:
@@ -32,5 +32,5 @@ security:
       jwtCookieName: kichat
 
 store-folder: H:/workspace/yo_chatapp/chatapp_store/
-store-url: https://localhost:8443/resources/
+store-url: http://localhost:8081/resources/
 default-avatar: H:/workspace/yo_chatapp/chatapp_store/default-avatar.jpg
