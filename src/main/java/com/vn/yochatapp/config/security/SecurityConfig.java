@@ -79,8 +79,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // Enable CORS and disable CSRF
         http.cors().configurationSource(this.corsConfigurationSource()).and().csrf().disable()
-                .requiresChannel(channel ->
-                        channel.anyRequest().requiresSecure())
+//                .requiresChannel(channel ->
+//                        channel.anyRequest().requiresSecure())
                 // Set unauthorized requests exception handler
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
                 .and()
